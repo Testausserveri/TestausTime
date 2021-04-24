@@ -12,3 +12,6 @@ We wanted to make a leaderboard on an already existing non-open source platform 
 | cherry | The frontend     | Raikas  | 0.0.1   |
 | banana | VSCode extension | Raikas  | 0.0.1   |
 
+## Contributing
+We use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0-beta.2/).
+Yes
