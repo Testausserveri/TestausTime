@@ -17,16 +17,14 @@
     "sauna",
     "testaustime"
   ],
-  "author": "Testausserveri.fi",
+  "contributors": [
+    "Raikas"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Testausserveri/TestausTime/issues"
   },
   "homepage": "https://github.com/Testausserveri/TestausTime#readme",
-  "devDependencies": {
-    "@types/express": "^4.17.11",
-    "typescript": "^4.2.4"
-  },
   "dependencies": {
     "express": "^4.17.1",
     "express-bearer-token": "^2.4.0",
