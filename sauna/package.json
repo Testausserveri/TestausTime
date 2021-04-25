@@ -1,0 +1,35 @@
+{
+  "name": "sauna",
+  "version": "0.0.1",
+  "description": "The backend API of TestausTime",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node .",
+    "compile": "tsc",
+    "watch": "tsc --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Testausserveri/TestausTime.git"
+  },
+  "keywords": [
+    "sauna",
+    "testaustime"
+  ],
+  "author": "Testausserveri.fi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Testausserveri/TestausTime/issues"
+  },
+  "homepage": "https://github.com/Testausserveri/TestausTime#readme",
+  "devDependencies": {
+    "@types/express": "^4.17.11",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-bearer-token": "^2.4.0",
+    "mongoose": "^5.12.5"
+  }
+}
