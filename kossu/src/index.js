@@ -66,7 +66,6 @@ function activate(context) {
     setInterval(() => {
         if (vscode.window.state.focused) {
             currentTime += 1000;
-            vscode.window.showInformationMessage(`Current time. ${currentTime}ms`);
         }
     }, 1000)
 
@@ -80,14 +79,13 @@ function activate(context) {
                 }
             })
             .then(()=>{
-                vscode.window.showInformationMessage(`Sent`);
                 currentTime = 0;
             })
             .catch((e) => {
                 vscode.window.showInformationMessage(`Error adding time. ${JSON.stringify(e.response.data)}`);
             })
         }
-    }, 1 * 60 * 1000)
+    }, 5 * 60 * 1000)
 }
 
 function deactivate() {

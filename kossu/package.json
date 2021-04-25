@@ -30,7 +30,8 @@
   "activationEvents": [
     "onCommand:testaustime.test",
     "onCommand:testaustime.setapikey",
-    "onCommand:testaustime.setcustomapi"
+    "onCommand:testaustime.setcustomapi",
+    "onStartupFinished"
   ],
   "contributes": {
     "commands": [
