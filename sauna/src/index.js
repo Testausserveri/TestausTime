@@ -38,7 +38,6 @@ fs.readdirSync('./src/routers/').forEach(async (file) => {
 });
 app.get('/', (request, response) => {
     response.json({
-        status: 200,
         message: 'Hello, sauna is hot and running!'
     });
 });
