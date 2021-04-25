@@ -1,6 +1,7 @@
 const vscode = require('vscode');
 const axios = require('axios');
 
+let currentTime = 0;
 /**
  * @param {vscode.ExtensionContext} context
  */
@@ -13,7 +14,8 @@ function activate(context) {
 
 	// Must be defined in package.json
 	let test = vscode.commands.registerCommand('testaustime.test', () => {
-		vscode.window.showInformationMessage('Testaustime active!');
+		vscode.window.showInformationMessage(`Testaustime is running. `);
+        vscode.window.showInformationMessage(`You are in project ${vscode.workspace.name ? vscode.workspace.name : 'none'}!`)
 	});
 	let setapikey = vscode.commands.registerCommand('testaustime.setapikey', async () => {
 		const result = await vscode.window.showInputBox({
@@ -24,7 +26,7 @@ function activate(context) {
 		});
         if (!result || result.length != 48) return;
         vscode.window.showInformationMessage(`Testing API-key...`);
-        axios.post(`${endpoint}/user/validateAPIKey`, {
+        axios.post(`${endpoint}/user/validateAPIKey`, {}, {
             headers: {
                 Authorization: `Bearer ${result}`
             }
@@ -59,6 +61,33 @@ function activate(context) {
 	context.subscriptions.push(test);
 	context.subscriptions.push(setapikey);
     context.subscriptions.push(setcustomapi);
+
+    // Adding time interval
+    setInterval(() => {
+        if (vscode.window.state.focused) {
+            currentTime += 1000;
+            vscode.window.showInformationMessage(`Current time. ${currentTime}ms`);
+        }
+    }, 1000)
+
+     // Send data to the server every 5 minutes
+     setInterval(() => {
+        if (currentTime >= 1000) {
+            if (currentTime > 300000) currentTime = 300000;
+            axios.put(`${endpoint}/user/addTime`, { time: currentTime, editor: 'vscode', project: vscode.workspace.name ? vscode.workspace.name : 'none'}, {
+                headers: {
+                    Authorization: `Bearer ${apikey}`
+                }
+            })
+            .then(()=>{
+                vscode.window.showInformationMessage(`Sent`);
+                currentTime = 0;
+            })
+            .catch((e) => {
+                vscode.window.showInformationMessage(`Error adding time. ${JSON.stringify(e.response.data)}`);
+            })
+        }
+    }, 1 * 60 * 1000)
 }
 
 function deactivate() {
