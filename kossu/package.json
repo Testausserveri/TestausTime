@@ -16,7 +16,8 @@
     "vscode": "^1.55.0"
   },
   "contributors": [
-    "Antti <antti@antti.codes>"
+    "Antti <antti@antti.codes>",
+    "raikasdev"
   ],
   "license": "MIT",
   "bugs": {
@@ -27,14 +28,27 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:testaustime.test"
+    "onCommand:testaustime.test",
+    "onCommand:testaustime.setapikey",
+    "onCommand:testaustime.setcustomapi"
   ],
   "contributes": {
     "commands": [
       {
         "command": "testaustime.test",
         "title": "TestausTime Sanity Check"
+      },
+      {
+        "command": "testaustime.setapikey",
+        "title": "TestausTime: Set API key"
+      },
+      {
+        "command": "testaustime.setcustomapi",
+        "title": "Set custom API endpoint"
       }
     ]
+  },
+  "dependencies": {
+    "axios": "^0.21.1"
   }
 }
