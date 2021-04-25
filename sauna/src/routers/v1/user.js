@@ -76,7 +76,7 @@ router.get('/:userid', async (req, res) => {
     });
 });
 
-router.post('/validAPIKey', async (req, res) => {
+router.post('/validateAPIKey', async (req, res) => {
     if (!req.token) {
         return res.status(400).json({
             message: 'Missing Bearer.',
