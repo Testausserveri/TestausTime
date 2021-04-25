@@ -86,7 +86,7 @@ user.methods.getDiscordUser = async function() {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
             });
-            const { access_token, token_type} = oauthData;
+            const { access_token, token_type} = oauthResult;
             self.accessToken = access_token;
             self.tokenType = token_type;
             await self.save();

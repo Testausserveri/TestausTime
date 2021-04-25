@@ -69,6 +69,11 @@ router.get('/register', async (req, res) => {
 
 router.get('/:userid', async (req, res) => {
     const user = await getUserById(req.params.userid);
+    if (!user) {
+        return res.status(400).json({
+            message: 'User not found',
+        })
+    }
     res.json({
         message: 'OK',
         cooldown: user.hasCooldown(),
