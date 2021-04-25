@@ -1,0 +1,40 @@
+{
+  "name": "testaustime",
+  "displayName": "TestausTime",
+  "version": "0.0.1",
+  "description": "The VSCode extension of TestausTime",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Testausserveri/TestausTime.git"
+  },
+  "keywords": [
+    "kossu",
+    "testaustime"
+  ],
+  "engines": {
+    "vscode": "^1.55.0"
+  },
+  "contributors": [
+    "Antti <antti@antti.codes>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Testausserveri/TestausTime/issues"
+  },
+  "homepage": "https://time.testausserveri.fi",
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:testaustime.test"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "testaustime.test",
+        "title": "TestausTime Sanity Check"
+      }
+    ]
+  }
+}
