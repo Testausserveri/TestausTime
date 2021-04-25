@@ -3,62 +3,56 @@ TestausTime: Makkara
 */
 
 import * as Discord from 'discord.js';
-import * as config from '../config.js';
-import * as axios from 'axios';
+import config from '../config.js';
+import axios from 'axios';
 const client = new Discord.Client();
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  // register commands
-  client.api.applications(client.user.id).commands.post({data: {
-      name: 'leaderboard',
-      description: 'Näytä TestausTimen top 10 käyttäjää.',
-      options: [],
-  }})
-  client.api.applications(client.user.id).commands.post({data: {
-    name: 'register',
-    description: 'Rekisteröidy TestausTimeen',
-    options: [],
-  }})
 });
 
-client.ws.on('INTERACTION_CREATE', async interaction => {
-  console.log(interaction)
-  const channelId = interaction.data.options[0].value
-  const channel = await client.channels.fetch(channelId)
+const millisToMinutesAndSeconds = (millis) => {
+  var minutes = Math.floor(millis / 60000);
+  var seconds = ((millis % 60000) / 1000).toFixed(0);
+  return `${minutes}min ${(seconds < 10 ? "0" : "")}${seconds}s`;
+}
 
-  // check that channel is a voice channel
-  if (!channel || channel.type != "voice") {
-      client.api.interactions(interaction.id, interaction.token).callback.post({data: {
-          type: 4,
-          data: {
-            content: `Toi ei oo äänikanava.`
-          }
-      }})
+const PREFIX = '.';
+client.on('message', async (message) => {
+  if(!message.content.startsWith(PREFIX) || message.content.length <= PREFIX.length) return;
+  const content = message.content.substring(PREFIX.length);
+  const args = content.split(' ');
+  const command = args.shift();
+
+  switch (command) { 
+    case 'leaderboard':
+      let msg = await message.reply('Haetaan listatietoja...')
+      axios.get(config.leaderboard_url)
+      .then(function (response) {
+        let leaderboardString = "";
+        const scoreboard = response.data.scoreboard;
+        for(let i = 0; i < scoreboard.length; i++) {
+          leaderboardString += `${i+1}. ${scoreboard[i].discordUser.tag} - ${millisToMinutesAndSeconds(scoreboard[i].totalTime)}\n`;
+        }
+        let embed = new Discord.MessageEmbed();
+        embed.setAuthor('time.testausserveri.fi');
+        embed.setDescription(leaderboardString);
+        embed.setTitle('Top 10');
+        msg.edit('',embed);
+      })
+      .catch(function (error) {
+        message.reply('Virhe toplistaa haettaessa.');
+      })
+      break;
+    case 'register':
+      let embed = new Discord.MessageEmbed();
+      embed.setAuthor('time.testausserveri.fi');
+      embed.setDescription(`[Paina tästä](<${config.oauth_url}>) rekisteröityäksesi TestausTimeen.\nMuista kopioida API-key ja tallentaa se jonnekkin.`);
+      message.reply(embed);
+      break;
+    default:
+      break;
   }
-
-  // create invite
-  client.api
-  .channels(channel.id)
-  .invites.post({
-      data: {
-          "max_age": 604800,
-          "max_uses": 0,
-          "target_application_id": "755600276941176913",
-          "target_type": 2,
-          "temporary": false,
-      }
-  })
-  .then(invite => new Discord.Invite(client, invite))
-  .then((invite) => {
-      console.log(`Luotu kutsu ${invite.url} palvelimelle ${channel.guild.name}`)
-      client.api.interactions(interaction.id, interaction.token).callback.post({data: {
-          type: 4,
-          data: {
-            content: `[Paina tästä](<${invite.url}>) avataksesi YouTube-katselusession kanavalla ${channel.name}.`
-          }
-      }})
-  })
 })
 
 client.login(config.discord_token).catch((e)=>{

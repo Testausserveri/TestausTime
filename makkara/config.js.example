@@ -1,3 +1,5 @@
 export default {
-  discord_token: ""
+  discord_token: "",
+  oauth_url: "",
+  leaderboard_url: "/api/v1/scoreboard/top10"
 }

@@ -50,11 +50,6 @@ router.get('/register', async (req, res) => {
 
         const userInfo = await userResult.json();
         let user = await registerUser({ userID: userInfo.id, accessToken: access_token, refreshToken: refresh_token, tokenType: token_type });
-        if (!user) {
-            return res.status(409).json({
-                message: 'User register failed. User with that ID already exists',
-            });
-        }
         res.json({
             message: 'User registered',
             apiKey: user.apiKey,

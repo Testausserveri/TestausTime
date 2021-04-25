@@ -25,6 +25,7 @@
   "homepage": "https://time.testausserveri.fi",
   "dependencies": {
     "axios": "^0.21.1",
+    "discord-slash-commands-client": "^1.1.1",
     "discord.js": "^12.5.3"
   }
 }

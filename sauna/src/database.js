@@ -126,8 +126,8 @@ export const getUserByAPIKey = (apiKey) => new Promise(async (resolve, reject) =
 
 export const registerUser = (userData) => new Promise(async (resolve, reject) => {
     try {
-        const userExists = await getUserById(userData.userID);
-        if (userExists) return resolve(false);
+        const existingUser = await getUserById(userData.userID);
+        if (existingUser) return resolve(existingUser);
         const user = new User(userData);
         user.time = [];
         user.apiKey = crypto.randomBytes(24).toString("hex");
