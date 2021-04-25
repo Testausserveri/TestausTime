@@ -85,7 +85,7 @@ router.post('/validateAPIKey', async (req, res) => {
     }
     const user = await getUserByAPIKey(req.token);
     if(!user) {
-        return res.status(400).json({
+        return res.json({
             message: 'API key not valid',
             valid: false,
         });
