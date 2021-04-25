@@ -1,4 +1,6 @@
 import express from 'express';
+import fetch from 'node-fetch';
+import config from '../../../config.js';
 import { registerUser, getUserById, getUserByAPIKey } from '../../database.js';
 export const route = '/user';
 export const router = express.Router();
@@ -9,25 +11,60 @@ router.get('/', (req, res) => {
     });
 });
 
-router.post('/register', async (req, res) => {
-    if (!req.body.id) {
+
+// Discord oauth
+router.get('/register', async (req, res) => {
+    if (!req.query.code) {
         res.status(400).json({
-            message: 'User id not supplied',
+            message: 'Code not supplied',
+        });
+    }
+    try {
+        const oauthResult = await fetch('https://discord.com/api/oauth2/token', {
+            method: 'POST',
+            body: new URLSearchParams({
+                client_id: config.discord_client_id,
+                client_secret: config.discord_client_secret,
+                code: req.query.code,
+                grant_type: 'authorization_code',
+                redirect_uri: config.discord_redirect_uri,
+                scope: 'identify',
+            }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        });
+
+        const oauthData = await oauthResult.json();
+        if (oauthData.error) {
+            return res.status(400).json({
+                message: 'Error. Code expired',
+            });
+        }
+        const { access_token, refresh_token, token_type} = oauthData;
+        const userResult = await fetch('https://discord.com/api/users/@me', {
+            headers: {
+                authorization: `${token_type} ${access_token}`,
+            },
+        });
+
+        const userInfo = await userResult.json();
+        let user = await registerUser({ userID: userInfo.id, accessToken: access_token, refreshToken: refresh_token, tokenType: token_type });
+        if (!user) {
+            return res.status(409).json({
+                message: 'User register failed. User with that ID already exists',
+            });
+        }
+        res.json({
+            message: 'User registered',
             apiKey: user.apiKey,
-            took: Date.now() - start + 'ms'
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: 'Error',
         });
     }
-    let user = await registerUser({ userID: req.body.id });
-    if (!user) {
-        res.status(409).json({
-            message: 'User register failed. Username already exists',
-            took: Date.now() - start + 'ms'
-        });
-    }
-    res.json({
-        message: 'User registered',
-        apiKey: user.apiKey,
-    });
 });
 
 router.get('/:userid', async (req, res) => {

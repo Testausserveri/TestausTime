@@ -1,7 +1,7 @@
 {
-  "name": "sauna",
+  "name": "makkara",
   "version": "0.0.1",
-  "description": "The backend API of TestausTime",
+  "description": "The discord bot of TestausTime",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
@@ -24,10 +24,7 @@
   },
   "homepage": "https://time.testausserveri.fi",
   "dependencies": {
-    "discord.js": "^12.5.3",
-    "express": "^4.17.1",
-    "express-bearer-token": "^2.4.0",
-    "mongoose": "^5.12.5",
-    "node-fetch": "^2.6.1"
+    "axios": "^0.21.1",
+    "discord.js": "^12.5.3"
   }
 }

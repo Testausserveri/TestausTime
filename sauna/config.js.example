@@ -1,4 +1,6 @@
 export default {
   mongodb_connection_string: "mongodb+srv://",
-  discord_token: ""
+  discord_redirect_uri: "https://",
+  discord_client_id: "",
+  discord_client_secret: ""
 }
