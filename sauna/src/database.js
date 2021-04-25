@@ -35,7 +35,6 @@ user.methods.hasCooldown = function () {
 const Time = database.model('Time', time);
 
 user.methods.addTime = async function (time, project, editor) {
-    console.log(this);
     if(time < 1000 || time > 300000) {
         return false;
     }
