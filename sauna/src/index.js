@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import config from '../config.js';
 import bearer from 'express-bearer-token'; 
 import fs from 'fs';
+import path from 'path';
 
 console.log('Connecting to the mongoDB');
 try {
@@ -37,7 +38,12 @@ fs.readdirSync('./src/routers/').forEach(async (file) => {
     app.use(module.route, module.router);
 });
 
-app.use('/', express.static(path.join(__dirname, '../salmiakki/build/')))
+app.use('/', express.static('../salmiakki/build/'))
+
+// fallback route for the react router
+app.use((req, res) => {
+    res.sendFile('index.html', {root: '../salmiakki/build/'});
+})
 
 app.listen(80, () => {
     console.log('Webserver up and running on port 80');
