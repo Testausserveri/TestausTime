@@ -9,7 +9,7 @@ We wanted to make a leaderboard on an already existing non-open source platform 
 | Folder    | Description      | Authors | Version |
 |-----------|------------------|---------|---------|
 | sauna     | The backend API  | Raikas  | 0.0.1   |
-| salmiakki | The frontend     |         | 0.0.1   |
+| salmiakki | The React frontend     |         | 0.0.1   |
 | makkara   | Discord bot      | Raikas  | 0.0.1   |
 | kossu     | VSCode extension | Raikas  | 0.0.1   |
 
