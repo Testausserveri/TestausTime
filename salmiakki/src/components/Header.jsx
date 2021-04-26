@@ -1,5 +1,5 @@
 import {
-    Link
+    Link,
 } from 'react-router-dom';
 
 import '../styles/Header.css';
@@ -12,6 +12,7 @@ export function Header() {
                 <Link to="/leaderboard">
                     <li className="secondary">Leaderboard</li>
                 </Link>
+                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                 <a href="#">
                     <li>Get the Extension</li>
                 </a>
