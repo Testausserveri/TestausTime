@@ -8,7 +8,7 @@
     font-weight: 800;
     font-size: 2.5rem;
     background: rgb(60,112,157);
-background: linear-gradient(51deg, rgba(60,112,157,1) 0%, rgba(34,65,108,1) 100%);
+    background: linear-gradient(51deg, rgba(60,112,157,1) 0%, rgba(34,65,108,1) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     display: inline-block;
