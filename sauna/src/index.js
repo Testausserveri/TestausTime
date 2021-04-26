@@ -36,11 +36,9 @@ fs.readdirSync('./src/routers/').forEach(async (file) => {
     const module = await import(`./routers/${file}`);
     app.use(module.route, module.router);
 });
-app.get('/', (request, response) => {
-    response.json({
-        message: 'Hello, sauna is hot and running!'
-    });
-});
+
+app.use('/', express.static(path.join(__dirname, '../salmiakki/build/')))
+
 app.listen(80, () => {
     console.log('Webserver up and running on port 80');
 });
