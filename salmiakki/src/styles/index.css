@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&family=Poppins:wght@600;800&display=swap');
+
+:root {
+    --background: #eee;
+    --text: #333;
+    --dc-background: #e2e7f7;
+    --dc: #7289DA;
+    --border: #ccc;
+    --title: #111;
+    --background-filter: contrast(0.2) brightness(1.7) saturate(1.7) grayscale(0.3);
+    --icon-filter: none;
+    --project-card-border: #000;
+}
+[data-theme="dark"] {
+    --background: #121212;
+    --text: #bbb;
+    --dc-background: #161b2b;
+    --dc: #445282;
+    --border: #222;
+    --title: #ddd;
+    --background-filter: contrast(0.5) brightness(0.35) saturate(1.7) grayscale(0.2) opacity(1);
+    --icon-filter: invert(1);
+    --project-card-border: #fff;
+}
+
+body {
+    font-family: 'Ubuntu', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: var(--background);
+    margin: 2rem;
+    transition: background-color 0.2s, color 0.2s, filter 0.2s, border 0.2s;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+        monospace;
+}
