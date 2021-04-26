@@ -1,46 +1,94 @@
-/*
- * Testausserveri.fi presents: TestausTime
- * Track the time you spent coding, with a cool leaderboard.
+/**
+ * Backend services
+ * (Following the structure of RaikasDev)
  */
+// Dependencies
 import express from 'express';
 import mongoose from 'mongoose';
-import config from '../config.js';
-import bearer from 'express-bearer-token'; 
+import bearer from 'express-bearer-token';
 import fs from 'fs';
 
-console.log('Connecting to the mongoDB');
-try {
-    await mongoose.connect(config.mongodb_connection_string, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false,
-        useCreateIndex: true
-    });
-}
-catch (error) {
-    console.error(error);
-    console.log('MongoDB connection failed');
-    process.exit();
-}
-export const database = mongoose;
-console.log('Connected to the MongoDB. Starting web server');
+// Internal dependencies
+import config from '../config.js';
+
+// Global constants
 const app = express();
+const appPort = 80;
+const routerLocation = './src/routers/';
+const mongooseConfiguration = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
+};
+
+// Global variables
+let databaseConnection = null;
+// eslint-disable-next-line prefer-const
+let routers = [];
+
+// Establish database connection
+// TODO: What value is exported? Null?
+console.log('Connecting to MongoDB...');
+try {
+    await databaseConnection = mongoose.connect(config.mongodb_connection_string,
+        mongooseConfiguration);
+    console.log('Connected to MongoDB.');
+} catch (err) {
+    console.error('Failed to connect to MongoDB.\n', err);
+    process.exit(-1);
+}
+
+export const database = databaseConnection;
+// Create routers list
+// eslint-disable-next-line no-new
+await new Promise((resolve) => {
+    fs.readdir(routerLocation, async (err, files) => {
+        if (err != null) {
+            console.error('Failed to get routers.\n', err);
+        } else {
+            // Any better way to do this?
+            // eslint-disable-next-line no-restricted-syntax
+            for (const file of files) {
+                // Check filetype
+                if (file.endsWith(".js") && fs.statSync(`./src/routers/${file}`).isFile()) {
+                    console.log(`> Loading ${file}...`);
+                    try {
+                        // eslint-disable-next-line no-await-in-loop
+                        const module = await import(`./routers/${file}`);
+                        routers[module.route] = module.router
+                        console.log(`> Loaded ${file}`);;
+                    } catch (err2) {
+                        console.error(`Failed to load ${file}.\n`, err2);
+                        // Will not terminate
+                    }
+                }
+            }
+            resolve()
+        }
+    });
+});
+console.log(`Loaded ${Object.keys(routers).length} router modules in total. Starting webserver...`);
+
+// Express webserver
 app.use(express.json());
 app.use(bearer());
 
-// Load the routers.
-fs.readdirSync('./src/routers/').forEach(async (file) => {
-    if (file.split('.').pop() !== 'js')
-        return;
-    console.log(`Loading router ${file}`);
-    const module = await import(`./routers/${file}`);
-    app.use(module.route, module.router);
-});
-app.get('/', (request, response) => {
-    response.json({
-        message: 'Hello, sauna is hot and running!'
+// eslint-disable-next-line no-restricted-syntax, guard-for-in
+for (const router in routers) { // Add in router modules
+    app.use(router, routers[router]);
+}
+
+app.get('/', (req, res) => { // Default route
+    res.status(200).json({
+        message: 'Hello, the sauna is hot and running!',
     });
 });
-app.listen(80, () => {
-    console.log('Webserver up and running on port 80');
+
+app.use((req, res) => { // 404 response
+    res.status(404).send('No such file or route.');
+});
+
+app.listen(appPort, () => {
+    console.log(`Webserver online in port ${appPort}.`);
 });
