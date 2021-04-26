@@ -5,7 +5,9 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "test": "node ."
+    "start": "node .",
+    "test": "npm run lint",
+    "lint": "eslint src/"
   },
   "repository": {
     "type": "git",
@@ -27,5 +29,10 @@
     "axios": "^0.21.1",
     "discord-slash-commands-client": "^1.1.1",
     "discord.js": "^12.5.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.25.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1"
   }
 }
