@@ -1,0 +1,27 @@
+name: salmiakki
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - salmiakki/**
+  pull_request:
+    paths:
+       - salmiakki/**
+jobs:
+  npm:
+    runs-on: ubuntu-20.04
+    if: "!contains(github.event.head_commit.message, '[ci skip]')"
+    strategy:
+      matrix:
+        node: [14.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm ci
+        working-directory: ./salmiakki
+      - run: npm test
+        working-directory: ./salmiakki
