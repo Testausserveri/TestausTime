@@ -25,7 +25,7 @@ const mongooseConfiguration = {
 // Global variables
 let databaseConnection = null;
 // eslint-disable-next-line prefer-const
-let routers = [];
+let routers = {};
 
 // Establish database connection
 // TODO: What value is exported? Null?
@@ -84,11 +84,9 @@ app.get('/', (req, res) => { // Default route
         message: 'Hello, the sauna is hot and running!',
     });
 });
-
 app.use((req, res) => { // 404 response
     res.status(404).send('No such file or route.');
 });
-
 app.listen(appPort, () => {
     console.log(`Webserver online in port ${appPort}.`);
 });
