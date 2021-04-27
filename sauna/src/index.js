@@ -7,7 +7,9 @@ import mongoose from 'mongoose';
 import config from '../config.js';
 import bearer from 'express-bearer-token'; 
 import fs from 'fs';
-import path from 'path';
+
+import usersController from './controllers/users.js';
+import heartbeatController from './controllers/heartbeat.js';
 
 console.log('Connecting to the mongoDB');
 try {
@@ -15,7 +17,7 @@ try {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
-        useCreateIndex: true
+        useCreateIndex: true,
     });
 }
 catch (error) {
@@ -23,28 +25,24 @@ catch (error) {
     console.log('MongoDB connection failed');
     process.exit();
 }
-export const database = mongoose;
 console.log('Connected to the MongoDB. Starting web server');
+
 const app = express();
 app.use(express.json());
 app.use(bearer());
 
-// Load the routers.
-fs.readdirSync('./src/routers/').forEach(async (file) => {
-    if (file.split('.').pop() !== 'js')
-        return;
-    console.log(`Loading router ${file}`);
-    const module = await import(`./routers/${file}`);
-    app.use(module.route, module.router);
-});
+// Api endpoints
+app.use('/api/users', usersController);
+app.use('/api/heartbeat', heartbeatController);
 
+// React content
 app.use('/', express.static('../salmiakki/build/'));
-
-// fallback route for the react router
 app.use((req, res) => {
     res.sendFile('index.html', {root: '../salmiakki/build/'});
 });
 
-app.listen(80, () => {
-    console.log('Webserver up and running on port 80');
+const PORT = 8080;
+
+app.listen(PORT, () => {
+    console.log(`Webserver up and running on port ${PORT}.`);
 });

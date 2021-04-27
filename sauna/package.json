@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "test": "node ."
+    "start": "node ."
   },
   "repository": {
     "type": "git",
@@ -28,7 +28,8 @@
     "express": "^4.17.1",
     "express-bearer-token": "^2.4.0",
     "mongoose": "^5.12.5",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "eslint": "^7.25.0",
