@@ -29,8 +29,7 @@
     "express": "^4.17.1",
     "express-bearer-token": "^2.4.0",
     "mongoose": "^5.12.5",
-    "node-fetch": "^2.6.1",
-    "yup": "^0.32.9"
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "eslint": "^7.25.0",
