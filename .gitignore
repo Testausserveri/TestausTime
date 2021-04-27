@@ -3,3 +3,4 @@ node_modules/
 
 # Secret files
 config.js
+.env
