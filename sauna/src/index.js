@@ -4,15 +4,28 @@
  */
 import express from 'express';
 import bearer from 'express-bearer-token';
+import dotenv from 'dotenv';
 
-import connectDatabase from './util/connectDatabase.js';
 import usersController from './controllers/users.js';
 import heartbeatController from './controllers/heartbeat.js';
 
 const port = 8080;
+const databaseUrl = process.env.MONGODB_URL;
+
+dotenv.config();
 
 console.log('Connecting to database.');
-await connectDatabase();
+await mongoose.connect(url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
+})
+    .then(console.log('Connected to MongoDB database.'))
+    .catch((e) => {
+        console.log('Could not connect to MongoDB database: ', e);
+        process.exit();
+    });
 
 const app = express();
 app.use(express.json());
