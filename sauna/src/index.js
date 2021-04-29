@@ -16,25 +16,27 @@ const databaseUrl = process.env.MONGODB_URL;
 dotenv.config();
 
 console.log('Connecting to database...');
-try {
-    if (!databaseUrl) throw new Error('No database url provided.');
-    const session = await connect(databaseUrl, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false,
-        useCreateIndex: true,
-    });
-    console.log('Connected to database.');
-    session.connection.on('disconnected', () => {
-        console.warn('Disconnected from database. Reconnecting...');
-    });
-    session.connection.on('reconnectFailed', () => {
-        console.log('Disconnected and unable to reconnect to database.');
-        process.exit(-1);
-    });
-} catch (err) {
-    console.log(`Failed to connect to database\n${err}`);
-}
+(async () => { // Top-level await is not in the spec just yet
+    try {
+        if (!databaseUrl) throw new Error('No database url provided.');
+        const session = await connect(databaseUrl, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useFindAndModify: false,
+            useCreateIndex: true,
+        });
+        console.log('Connected to database.');
+        session.connection.on('disconnected', () => {
+            console.warn('Disconnected from database. Reconnecting...');
+        });
+        session.connection.on('reconnectFailed', () => {
+            console.log('Disconnected and unable to reconnect to database.');
+            process.exit(-1);
+        });
+    } catch (err) {
+        console.log(`Failed to connect to database\n${err}`);
+    }
+})();
 
 const app = express();
 app.use(express.json());
