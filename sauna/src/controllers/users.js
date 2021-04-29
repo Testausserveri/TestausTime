@@ -43,7 +43,7 @@ router.get('/register', async (req, res) => {
 /** Require given user to exist */
 router.use('/:id', async (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-        return res.sendStatus(400);
+        return res.status(400).send('Invalid type object id.');
     }
     return next();
 });

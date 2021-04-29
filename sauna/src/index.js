@@ -10,7 +10,6 @@ import usersController from './controllers/users.js';
 import heartbeatController from './controllers/heartbeat.js';
 
 const port = process.env.PORT || 80;
-const databaseUrl = process.env.MONGODB_URL;
 
 dotenv.config();
 
@@ -24,7 +23,7 @@ await mongoose.connect(url, {
     .then(console.log('Connected to MongoDB database.'))
     .catch((e) => {
         console.log('Could not connect to MongoDB database: ', e);
-        process.exit();
+        process.exit(-1);
     });
 
 const app = express();
