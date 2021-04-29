@@ -5,7 +5,7 @@
 import express from 'express';
 import bearer from 'express-bearer-token';
 import dotenv from 'dotenv';
-import mongoose from 'mongoose';
+import { connect } from 'mongoose';
 
 import usersController from './controllers/users.js';
 import heartbeatController from './controllers/heartbeat.js';
@@ -18,7 +18,7 @@ dotenv.config();
 console.log('Connecting to database...');
 try {
     if (!databaseUrl) throw new Error('No database url provided.');
-    const session = await mongoose.connect(databaseUrl, {
+    const session = await connect(databaseUrl, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
