@@ -1,18 +1,32 @@
 import mongoose from 'mongoose';
 
 const projectEdit = new mongoose.Schema({
-    day: String,
-    project: String,
-    editors: [String],
+    day: {
+        type: String,
+        required: true,
+    },
+    project: {
+        type: String,
+        required: true,
+    },
+    editors: {
+        type: [String],
+        required: true,
+    },
     hours: [{
         type: Number,
         min: 0,
         max: 23,
+        required: true,
     }],
-    totalTime: Number,
+    totalTime: {
+        type: Number,
+        required: true,
+    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        required: true,
     },
 });
 
