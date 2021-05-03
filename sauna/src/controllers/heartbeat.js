@@ -15,10 +15,16 @@ router.post('/', async (req, res) => {
     const userWithEdits = await User.findOne({ apiKey: req.token }).populate('editedProjects');
     if (!userWithEdits) return res.status(403);
 
-    const { test = false, project = null, editor = null } = req.body;
-    if (!project || !editor) return res.status(400);
+    const {
+        test = false,
+        project = null,
+        editor = null,
+        totalTime = null,
+    } = req.body;
 
     if (test) return res.json({ version: `v${apiVersion}` });
+
+    if (typeof totalTime !== 'number' || totalTime < 2 || totalTime > 5 * 60) return res.status(400).send({ error: 'Invalid body.' });
 
     const date = new Date();
     const day = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
@@ -32,18 +38,18 @@ router.post('/', async (req, res) => {
         pushIfNotExists(projectMatch.editors, editor);
         pushIfNotExists(projectMatch.hours, date.getHours());
 
-        projectMatch.totalTime += 2;
+        projectMatch.totalTime += totalTime;
 
         const saveSuccess = await projectMatch.save();
         if (!saveSuccess) return res.status(400);
     } else {
         const editedProject = new ProjectEdit({
-            day,
             user: user._id,
-            project,
             editors: [editor],
             hours: [date.getHours()],
-            totalTime: 2,
+            day,
+            project,
+            totalTime,
         });
 
         const saveSuccess = await editedProject.save();
