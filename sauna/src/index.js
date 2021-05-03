@@ -26,10 +26,6 @@ app.use('/api/heartbeat', heartbeatController);
 
 // TODO: Move error handling into a middleware here, if by any means possible
 
-// React content
-app.use('/', express.static('../salmiakki/build/'));
-app.use((_, res) => res.sendFile('index.html', { root: '../salmiakki/build/' }));
-
 console.log('Connecting to database...');
 
 // Top-level await is not in the specification just yet
