@@ -12,6 +12,8 @@
     },
     "rules": {
         "no-console": "off",
+        "no-underscore-dangle": "off",
+        "import/extensions": "off",
         "indent": [
             "error",
             4

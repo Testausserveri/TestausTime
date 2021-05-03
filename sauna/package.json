@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "test": "node ."
+    "start": "node ."
   },
   "repository": {
     "type": "git",
@@ -25,9 +25,11 @@
   "homepage": "https://time.testausserveri.fi",
   "dependencies": {
     "discord.js": "^12.5.3",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-bearer-token": "^2.4.0",
     "mongoose": "^5.12.5",
+    "mongoose-unique-validator": "^2.0.3",
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {

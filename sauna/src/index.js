@@ -3,48 +3,57 @@
  * Track the time you spent coding, with a cool leaderboard.
  */
 import express from 'express';
+import bearer from 'express-bearer-token';
+import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import config from '../config.js';
-import bearer from 'express-bearer-token'; 
-import fs from 'fs';
-import path from 'path';
 
-console.log('Connecting to the mongoDB');
-try {
-    await mongoose.connect(config.mongodb_connection_string, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false,
-        useCreateIndex: true
-    });
-}
-catch (error) {
-    console.error(error);
-    console.log('MongoDB connection failed');
-    process.exit();
-}
-export const database = mongoose;
-console.log('Connected to the MongoDB. Starting web server');
+import usersController from './controllers/users.js';
+import heartbeatController from './controllers/heartbeat.js';
+
+dotenv.config();
+
+const port = process.env.PORT || 80;
+const databaseUrl = process.env.MONGODB_URL;
+
 const app = express();
+
 app.use(express.json());
 app.use(bearer());
 
-// Load the routers.
-fs.readdirSync('./src/routers/').forEach(async (file) => {
-    if (file.split('.').pop() !== 'js')
-        return;
-    console.log(`Loading router ${file}`);
-    const module = await import(`./routers/${file}`);
-    app.use(module.route, module.router);
-});
+// REST API endpoints
+app.use('/api/users', usersController);
+app.use('/api/heartbeat', heartbeatController);
 
-app.use('/', express.static('../salmiakki/build/'));
+// TODO: Move error handling into a middleware here, if by any means possible
 
-// fallback route for the react router
-app.use((req, res) => {
-    res.sendFile('index.html', {root: '../salmiakki/build/'});
-});
+console.log('Connecting to database...');
 
-app.listen(80, () => {
-    console.log('Webserver up and running on port 80');
-});
+// Top-level await is not in the specification just yet
+(async () => {
+    try {
+        if (!databaseUrl) throw new Error('No database url provided.');
+
+        const session = await mongoose.connect(databaseUrl, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useFindAndModify: false,
+            useCreateIndex: true,
+        });
+
+        console.log('Connected to database.');
+
+        app.listen(port, () => {
+            console.log(`Webserver up and running on port ${port}.`);
+        });
+
+        session.connection
+            .on('disconnected', () => console.warn('Disconnected from database. Reconnecting....'))
+            .on('reconnectFailed', () => {
+                console.log('Disconnected and unable to reconnect to database.');
+                process.exit(-1);
+            });
+    } catch (err) {
+        console.log(`Failed to connect to database:\n${err}`);
+        process.exit(-1);
+    }
+})();
