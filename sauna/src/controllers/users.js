@@ -30,7 +30,13 @@ router.get('/register', async (req, res) => {
         editedProjects: [],
     });
 
-    await user.save();
+    try {
+        await user.save();
+    } catch (e) {
+        if (e instanceof mongoose.Error.ValidationError) {
+            return res.status(400).send({ error: e.errors[0].message || e.message });
+        }
+    }
 
     return res.json({
         id: user._id,
@@ -42,10 +48,10 @@ router.get('/register', async (req, res) => {
 
 /** Require given user to exist */
 router.use('/:id', async (req, res, next) => {
-    if (!req.params.id) return res.status(400).send('Expected id parameter as the user id.');
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-        return res.status(400).send('Invalid type object id.');
-    }
+    if (!req.params.id) return res.status(400).send({ error: 'Expected id parameter as the user id.' });
+
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(400).send({ error: 'Invalid user ID.' });
+
     return next();
 });
 
@@ -54,18 +60,22 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
     const user = await User.findById(id).populate('editedProjects');
-    if (!user) return res.status(403);
+    if (!user) return res.status(404);
 
     let totalTime = 0;
 
-    const projects = user.editedProjects.reduce((a, e) => {
-        totalTime += e.totalTime;
+    const projects = user.editedProjects.reduce((editAccumulator, projectEdit) => {
+        const { project: projectName, totalTime: projectTime } = projectEdit;
+
+        totalTime += projectTime;
+
         // eslint-disable-next-line no-param-reassign
-        a[e.project] = {
-            totalTime: (a[e.project]) ? (a[e.project].totalTime + e.totalTime) : e.totalTime,
+        editAccumulator[projectEdit.project] = {
+            totalTime: (editAccumulator[projectName])
+                ? (editAccumulator[projectName].totalTime + projectTime) : totalTime,
         };
 
-        return a;
+        return editAccumulator;
     }, {});
 
     return res.json({
