@@ -15,6 +15,21 @@ const databaseUrl = process.env.MONGODB_URL;
 
 dotenv.config();
 
+const app = express();
+
+app.use(express.json());
+app.use(bearer());
+
+// REST API endpoints
+app.use('/api/users', usersController);
+app.use('/api/heartbeat', heartbeatController);
+
+// TODO: Move error handling into a middleware here, if by any means possible
+
+// React content
+app.use('/', express.static('../salmiakki/build/'));
+app.use((_, res) => res.sendFile('index.html', { root: '../salmiakki/build/' }));
+
 console.log('Connecting to database...');
 
 // Top-level await is not in the specification just yet
@@ -31,6 +46,10 @@ console.log('Connecting to database...');
 
         console.log('Connected to database.');
 
+        app.listen(port, () => {
+            console.log(`Webserver up and running on port ${port}.`);
+        });
+
         session.connection
             .on('disconnected', () => console.warn('Disconnected from database. Reconnecting....'))
             .on('reconnectFailed', () => {
@@ -42,22 +61,3 @@ console.log('Connecting to database...');
         process.exit(-1);
     }
 })();
-
-const app = express();
-
-app.use(express.json());
-app.use(bearer());
-
-// REST API endpoints
-app.use('/api/users', usersController);
-app.use('/api/heartbeat', heartbeatController);
-
-// TODO: Move error handling into a middleware here, if by any means possible
-
-// React content
-app.use('/', express.static('../salmiakki/build/'));
-app.use((_, res) => res.sendFile('index.html', { root: '../salmiakki/build/' }));
-
-app.listen(port, () => {
-    console.log(`Webserver up and running on port ${port}.`);
-});
