@@ -80,7 +80,6 @@ router.get('/:id', async (req, res) => {
 
     return res.json({
         discordId: user.discordId,
-        apiKey: user.apiKey,
         totalTime,
         projects,
     });
