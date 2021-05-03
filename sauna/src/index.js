@@ -10,10 +10,10 @@ import mongoose from 'mongoose';
 import usersController from './controllers/users.js';
 import heartbeatController from './controllers/heartbeat.js';
 
+dotenv.config();
+
 const port = process.env.PORT || 80;
 const databaseUrl = process.env.MONGODB_URL;
-
-dotenv.config();
 
 const app = express();
 
