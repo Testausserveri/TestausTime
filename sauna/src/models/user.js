@@ -10,6 +10,7 @@ const user = new mongoose.Schema({
     apiKey: {
         type: String,
         required: true,
+        unique: true,
     },
     editedProjects: [{
         type: mongoose.Schema.Types.ObjectId,
