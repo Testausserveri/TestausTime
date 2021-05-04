@@ -4,3 +4,6 @@ node_modules/
 # Secret files
 config.js
 .env
+
+# Mongo test server leftovers
+sauna/globalConfig.json
