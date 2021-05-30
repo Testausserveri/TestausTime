@@ -19,6 +19,10 @@ app.use(bearer());
 app.use('/api/users', usersController);
 app.use('/api/heartbeat', heartbeatController);
 
+// React content
+app.use('/', express.static('../salmiakki/build/'));
+app.use((_, res) => res.sendFile('index.html', { root: '../salmiakki/build/' }));
+
 // TODO: Move error handling into a middleware here, if by any means possible
 
 const startServer = async (port, databaseUrl) => {
